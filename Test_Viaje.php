@@ -204,40 +204,35 @@ do{
         case 3:
             echo "\n\n+++++AGREGAR UN VIAJE";
             // Datos
-            echo "\n+Ingrese el destino del viaje: \n>";
-            $objViaje->setDestino(strtolower(trim(fgets(STDIN))));
-            echo "+Ingrese la cantidad máxima de pasajeros: \n>";
-            $objViaje->setCantMaxPasajeros(rango(1, 300));
-            echo "+Ingrese el importe del viaje: \n>";
-            $objViaje->setImporte(rango(1, 100000000));
-            echo "+Ingrese el tipo de asiento (semicama/cama)\n>";
-            $objViaje->setTipoAsiento(entre(["semicama", "cama"]));
-            echo "+¿El viaje es ida y vuelta? (si/no)\n>";
-            $objViaje->setIdaYVuelta(entre(["si", "no"]));
-            // Empresa - Hay una única empresa.
-            $objEmpresa->buscarEmpresa(1);
-            $objViaje->setObjEmpresa($objEmpresa);
-            // Responsable
-            $encontro = false;
-            do{
-                echo "+Ingrese el número de licencia del responsable del viaje (-1 para salir al menú principal):\n>";
-                $respuestaR = rango(-1, 1000000000);
-    
-                if($respuestaR != -1){
-                    if($objResponsableV->buscarResponsablePorLicencia($respuestaR)){
-                        $encontro = true;
-                        $objViaje->setObjResponsableV($objResponsableV);
-                    }else{
-                        echo "+El responsable ingresado no existe. Puede registrarlo en la opción 6 del menú principal.\n";
-                    }
-                }
-            }while($respuestaR != -1 && !$encontro);
-            if($respuestaR != -1){
+            echo "\n+Ingrese el número de licencia del responsable del viaje:\n>";
+            $respuestaR = rango(1, 1000000000);
+
+            if($objResponsableV->buscarResponsablePorLicencia($respuestaR)){
+                $objViaje->setObjResponsableV($objResponsableV);
+                echo "+Responsable seleccionado:";
+                echo linea();
+                echo $objResponsableV;
+                echo linea();
+                echo "\n+Ingrese el destino del viaje: \n>";
+                $objViaje->setDestino(strtolower(trim(fgets(STDIN))));
+                echo "+Ingrese la cantidad máxima de pasajeros: \n>";
+                $objViaje->setCantMaxPasajeros(rango(1, 300));
+                echo "+Ingrese el importe del viaje: \n>";
+                $objViaje->setImporte(rango(1, 100000000));
+                echo "+Ingrese el tipo de asiento (semicama/cama)\n>";
+                $objViaje->setTipoAsiento(entre(["semicama", "cama"]));
+                echo "+¿El viaje es ida y vuelta? (si/no)\n>";
+                $objViaje->setIdaYVuelta(entre(["si", "no"]));
+                // Empresa - Hay una única empresa.
+                $objEmpresa->buscarEmpresa(1);
+                $objViaje->setObjEmpresa($objEmpresa);
                 // Inserción
                 $objViaje->insertar();
                 // Los pasajeros se agregan al seleccionar un viaje
                 echo "+Para agregar pasajeros, seleccione el viaje número ". $objViaje->getId(). " en la opción 4 del menú principal.\n";
                 echo "++++INSERCIÓN EXITOSA";
+            }else{
+                echo "+El responsable ingresado no existe. Puede registrarlo en la opción 6 del menú principal.\n";
             }
             break;
         case 4:
