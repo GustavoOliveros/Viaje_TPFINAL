@@ -303,7 +303,8 @@ do{
                                 break;
                             case 3:
                                 echo "\n\n+++++ELIMINAR VIAJE";
-                                echo "\n+¿Seguro que desea eliminar el viaje? (si/no): \n>";
+                                echo "\n+¿Seguro que desea eliminar el viaje? (si/no):";
+                                echo "\n+Se eliminaran todos los pasajeros asociados \n>";
                                 $respuesta = entre(["si", "no"]);
                                 if($respuesta == "si"){
                                     $objViaje->eliminar();
@@ -348,7 +349,12 @@ do{
                                         echo "\n++++INSERCION EXITOSA";
                                     }else{
                                         echo "+El pasajero con el documento nro " . $objPasajero->getNumDoc() . " ya está registrado en el viaje nro ". $objPasajero->getObjViaje()->getId();
-                                        echo "\n+Puede eliminarlo en el menu principal.";
+                                        echo "\n+¿Desea cambiarlo a este viaje? (si/no)\n>";
+                                        $respuesta = entre(["si", "no"]);
+                                        if($respuesta == "si"){
+                                            $objPasajero->modificar($objViaje->getId());
+                                            echo "++++MODIFICACION EXITOSA";
+                                        }
                                     }
                                 }else{
                                     echo "No quedan puestos disponibles.";

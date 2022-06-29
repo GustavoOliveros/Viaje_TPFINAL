@@ -240,13 +240,20 @@ class Pasajero{
 
     /**
      * Modifica los datos de algún pasajero en la base de datos y le coloca los del objeto actual
+     * @param $idViaje (opcional)
      * @return boolean true si se concretó, false caso contrario
      */
-    public function modificar(){
+    public function modificar($idViaje = ""){
         $base = new BaseDatos();
         $seConcreto = false;
-        $consulta = "UPDATE pasajero SET pnombre = '" . $this->getNombre() . "', papellido = '" . $this->getApellido() .
-        "', ptelefono = " . $this->getTelefono() . " WHERE rdocumento = '" . $this->getNumDoc(). "'";
+        if($idViaje == ""){
+            $consulta = "UPDATE pasajero SET pnombre = '" . $this->getNombre() . "', papellido = '" . $this->getApellido() .
+            "', ptelefono = " . $this->getTelefono() . " WHERE rdocumento = '" . $this->getNumDoc(). "'";
+        }else{
+            $consulta = "UPDATE pasajero SET pnombre = '" . $this->getNombre() . "', papellido = '" . $this->getApellido() .
+            "', ptelefono = " . $this->getTelefono() . ", idviaje = ". $idViaje . " WHERE rdocumento = '" . $this->getNumDoc(). "'";
+        }
+
 
         // Iniciamos la base de datos
         if($base->Iniciar()){
