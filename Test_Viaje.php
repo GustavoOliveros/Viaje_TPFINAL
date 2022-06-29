@@ -191,6 +191,7 @@ do{
             echo $objEmpresa->mostrarDatos();
             echo linea();
 
+            $respuesta = 1;
             break;
         case 2:
             echo "\n\nMODIFICAR DATOS DE LA EMPRESA";
@@ -200,6 +201,7 @@ do{
             $direccion = trim(fgets(STDIN));
             $objEmpresa->modificarDatos($nombre, $direccion);
             echo "++++MODIFICACIÓN EXITOSA";
+            $respuesta = 2;
             break;
         case 3:
             echo "\n\n+++++AGREGAR UN VIAJE";
@@ -234,6 +236,7 @@ do{
             }else{
                 echo "+El responsable ingresado no existe. Puede registrarlo en la opción 6 del menú principal.\n";
             }
+            $respuesta = 3;
             break;
         case 4:
             echo "\n\n+++++SELECCIONAR UN VIAJE";
@@ -277,9 +280,12 @@ do{
                                 linea();
                                 echo $objViaje->mostrarDatos();
                                 linea();
+                                $respuesta = 1;
                                 break;
                             case 2:
                                 echo "\n\n+++++MODIFICAR DATOS DEL VIAJE";
+                                $colecPasajeros = $objPasajero->listar("idviaje = " . $objViaje->getId());
+                                $objViaje->setColecObjPasajeros($colecPasajeros);
                                 echo "\n+Ingrese el destino del viaje (Actual: ". $objViaje->getDestino(). ")  - '-1' para dejarlo igual\n>";
                                 $destino = strtolower(trim(fgets(STDIN)));
                                 echo "+Ingrese la cantidad máxima de pasajeros: (Actual: ". $objViaje->getCantMaxPasajeros(). ")\n>";
@@ -293,6 +299,7 @@ do{
 
                                 $objViaje->modificarDatos($destino, $cantMaxPsj, $importe, $tipoAsiento, $idaYVuelta);
                                 echo "++++MODIFICACIÓN COMPLETADA";
+                                $respuesta = 2;
                                 break;
                             case 3:
                                 echo "\n\n+++++ELIMINAR VIAJE";
@@ -303,6 +310,7 @@ do{
                                     echo "++++ELIMINADO.";
                                     $banderaEliminacion = true;
                                 }
+                                $respuesta = 3;
                                 break;
                             case 4:
                                 echo "\n\n+++++VER TODOS LOS PASAJEROS";
@@ -312,6 +320,7 @@ do{
                                 }else{
                                     echo "\nNo hay pasajeros en este viaje. Use la opción 5 del menú viaje para agregar.";
                                 }
+                                $respuesta = 4;
                                 break;
                             case 5:
                                 // +++++VENDER PASAJE/ AGREGAR PASAJEROS
@@ -326,8 +335,8 @@ do{
                                         $objPasajero->setNombre(trim(fgets(STDIN)));
                                         echo "+Ingrese el apellido del pasajero: \n>";
                                         $objPasajero->setApellido(trim(fgets(STDIN)));
-                                        echo "+Ingrese el numero de telefono del pasajero: \n>";
-                                        $objPasajero->setTelefono(rango(1, 99999999999));
+                                        echo "+Ingrese el numero de telefono del pasajero: (sin codigo de area)\n>";
+                                        $objPasajero->setTelefono(rango(1, 9999999));
                                         $objPasajero->setObjViaje($objViaje);
 
                                         echo linea();
@@ -344,6 +353,7 @@ do{
                                 }else{
                                     echo "No quedan puestos disponibles.";
                                 }
+                                $respuesta = 5;
                                 break;
                             case 6:
                                 echo "\n\n+++++CAMBIAR RESPONSABLE";
@@ -359,6 +369,7 @@ do{
                                 }else{
                                     echo "El responsable ingresado no fue encontrado. Puede registrarlo en la opción 6 del menú principal.";
                                 }
+                                $respuesta = 6;
                                 break;
                         }
                     }while($respuesta != 7 && !$banderaEliminacion);
@@ -366,6 +377,7 @@ do{
                     echo "+El viaje ingresado no existe.";
                 }
             }
+            $respuesta = 4;
             break;
         case 5:
             echo "\n\n+++++BUSCAR RESPONSABLE";
@@ -387,6 +399,7 @@ do{
                     echo "+No hay responsables registrados. Registre alguno en la opción 6 del menú principal.";
                 }
             }
+            $respuesta = 5;
             break;
         case 6:
             echo "\n\n+++++AGREGAR UN RESPONSABLE";
@@ -407,6 +420,7 @@ do{
             }else{
                 echo "+El responsable con la licencia nro " . $licencia . " ya está registrado.";
             }
+            $respuesta = 6;
             break;
         case 7:
             echo "\n\n++++MODIFICAR RESPONSABLE";
@@ -422,6 +436,7 @@ do{
             }else{
                 echo "+El responsable no fue encontrado.";
             }
+            $respuesta = 7;
             break;
         case 8:
             // +++++ELIMINAR RESPONSABLE
@@ -467,6 +482,7 @@ do{
             }else{
                 echo "+Se requieren al menos dos responsables para ejecutar esta operacion. Utilice la opcion 6 del menu principal para agregar responsables.";
             }
+            $respuesta = 8;
             break;
         case 9:
             echo "\n\n+++++BUSCAR PASAJERO";
@@ -477,8 +493,9 @@ do{
                 echo $objPasajero->mostrarDatos();
                 echo linea();
             }else{
-                echo "+Pasajero no encontrado.";
+                echo "+Pasajero no encontrado. Puede agregar alguno seleccionando un viaje en la opcion 4 del menu.";
             }
+            $respuesta = 9;
             break;
         case 10:
             echo "\n\n++++MODIFICAR PASAJERO";
@@ -489,13 +506,15 @@ do{
                 $nombre = trim(fgets(STDIN));
                 echo "+Ingrese el nuevo apellido del pasajero: (Actual: " . $objPasajero->getApellido() . ") - '-1' para dejarlo igual\n>";
                 $apellido = trim(fgets(STDIN));
-                echo "+Ingrese el nuevo número de telefono del pasajero: (Actual: " . $objPasajero->getTelefono() . ") - '-1' para dejarlo igual\n>";
-                $telefono = rango(-1, 99999999999);
+                echo "+Ingrese el nuevo número de telefono del pasajero: (Actual: " . $objPasajero->getTelefono() . ") - '-1' para dejarlo igual";
+                echo "+(Sin codigo de area)\n>";
+                $telefono = rango(-1, 9999999);
                 $objPasajero->modificarDatos($nombre, $apellido, $telefono);
                 echo "++++MODIFICACIÓN EXITOSA";
             }else{
-                echo "+ERROR: El pasajero no fue encontrado.";
+                echo "+ERROR: El pasajero no fue encontrado. Puede agregar alguno seleccionando un viaje en la opcion 4 del menu.";
             }
+            $respuesta = 10;
             break;
         case 11:
             echo "\n\n+++++ELIMINAR PASAJERO";
@@ -515,6 +534,7 @@ do{
             }else{
                 echo "El pasajero ingresado no fue encontrado.";
             }
+            $respuesta = 11;
             break;
     }
 }while($respuesta != 12)
