@@ -216,23 +216,29 @@ do{
                 echo $objResponsableV;
                 echo linea();
                 echo "\n+Ingrese el destino del viaje: \n>";
-                $objViaje->setDestino(strtolower(trim(fgets(STDIN))));
-                echo "+Ingrese la cantidad máxima de pasajeros: \n>";
-                $objViaje->setCantMaxPasajeros(rango(1, 300));
-                echo "+Ingrese el importe del viaje: \n>";
-                $objViaje->setImporte(rango(1, 100000000));
-                echo "+Ingrese el tipo de asiento (semicama/cama)\n>";
-                $objViaje->setTipoAsiento(entre(["semicama", "cama"]));
-                echo "+¿El viaje es ida y vuelta? (si/no)\n>";
-                $objViaje->setIdaYVuelta(entre(["si", "no"]));
-                // Empresa - Hay una única empresa.
-                $objEmpresa->buscarEmpresa(1);
-                $objViaje->setObjEmpresa($objEmpresa);
-                // Inserción
-                $objViaje->insertar();
-                // Los pasajeros se agregan al seleccionar un viaje
-                echo "+Para agregar pasajeros, seleccione el viaje número ". $objViaje->getId(). " en la opción 4 del menú principal.\n";
-                echo "++++INSERCIÓN EXITOSA";
+                $destino = strtolower(trim(fgets(STDIN)));
+                $colecDestino = $objViaje->listar("vdestino = '" . $destino."'");
+                if(count($colecDestino)== 0){
+                    echo "+Ingrese la cantidad máxima de pasajeros: \n>";
+                    $objViaje->setCantMaxPasajeros(rango(1, 300));
+                    echo "+Ingrese el importe del viaje: \n>";
+                    $objViaje->setImporte(rango(1, 100000000));
+                    echo "+Ingrese el tipo de asiento (semicama/cama)\n>";
+                    $objViaje->setTipoAsiento(entre(["semicama", "cama"]));
+                    echo "+¿El viaje es ida y vuelta? (si/no)\n>";
+                    $objViaje->setIdaYVuelta(entre(["si", "no"]));
+                    // Empresa - Hay una única empresa.
+                    $objEmpresa->buscarEmpresa(1);
+                    $objViaje->setObjEmpresa($objEmpresa);
+                    // Inserción
+                    $objViaje->insertar();
+                    // Los pasajeros se agregan al seleccionar un viaje
+                    echo "+Para agregar pasajeros, seleccione el viaje número ". $objViaje->getId(). " en la opción 4 del menú principal.\n";
+                    echo "++++INSERCIÓN EXITOSA";
+                }else{
+                    echo "\n+No puede ingresar un viaje al mismo destino.";
+                }
+
             }else{
                 echo "+El responsable ingresado no existe. Puede registrarlo en la opción 6 del menú principal.\n";
             }
@@ -286,19 +292,26 @@ do{
                                 echo "\n\n+++++MODIFICAR DATOS DEL VIAJE";
                                 $colecPasajeros = $objPasajero->listar("idviaje = " . $objViaje->getId());
                                 $objViaje->setColecObjPasajeros($colecPasajeros);
+                                
                                 echo "\n+Ingrese el destino del viaje (Actual: ". $objViaje->getDestino(). ")  - '-1' para dejarlo igual\n>";
                                 $destino = strtolower(trim(fgets(STDIN)));
-                                echo "+Ingrese la cantidad máxima de pasajeros: (Actual: ". $objViaje->getCantMaxPasajeros(). ")\n>";
-                                $cantMaxPsj = rango(count($objViaje->getColecObjPasajeros()), 300);
-                                echo "+Ingrese el importe del viaje: (Actual: ". $objViaje->getImporte(). ") - '-1' para dejarlo igual\n>";
-                                $importe = rango(-1, 100000000);
-                                echo "+Ingrese el tipo de asiento (semicama/cama) (Actual: ". $objViaje->getTipoAsiento(). ") - '-1' para dejarlo igual\n>";
-                                $tipoAsiento = entre(["semicama", "cama", "-1"]);
-                                echo "+¿El viaje es ida y vuelta? (si/no) (Actual: ". $objViaje->getIdaYVuelta(). ")  - '-1' para dejarlo igual\n>";
-                                $idaYVuelta = entre(["si", "no", "-1"]);
+                                $colecDestino = $objViaje->listar("vdestino = '" . $destino."'");
 
-                                $objViaje->modificarDatos($destino, $cantMaxPsj, $importe, $tipoAsiento, $idaYVuelta);
-                                echo "++++MODIFICACIÓN COMPLETADA";
+                                if(count($colecDestino) == 0){
+                                    echo "+Ingrese la cantidad máxima de pasajeros: (Actual: ". $objViaje->getCantMaxPasajeros(). ")\n>";
+                                    $cantMaxPsj = rango(count($objViaje->getColecObjPasajeros()), 300);
+                                    echo "+Ingrese el importe del viaje: (Actual: ". $objViaje->getImporte(). ") - '-1' para dejarlo igual\n>";
+                                    $importe = rango(-1, 100000000);
+                                    echo "+Ingrese el tipo de asiento (semicama/cama) (Actual: ". $objViaje->getTipoAsiento(). ") - '-1' para dejarlo igual\n>";
+                                    $tipoAsiento = entre(["semicama", "cama", "-1"]);
+                                    echo "+¿El viaje es ida y vuelta? (si/no) (Actual: ". $objViaje->getIdaYVuelta(). ")  - '-1' para dejarlo igual\n>";
+                                    $idaYVuelta = entre(["si", "no", "-1"]);
+                                    $objViaje->modificarDatos($destino, $cantMaxPsj, $importe, $tipoAsiento, $idaYVuelta);
+                                    echo "++++MODIFICACIÓN COMPLETADA";
+                                }else{
+                                    echo "\n+No pueden haber dos viajes al mismo destino.";
+                                }
+
                                 $respuesta = 2;
                                 break;
                             case 3:

@@ -274,28 +274,7 @@ class Viaje{
                 // Con while se recorre todo.
                 while($fila = $base->Registro()){
                     $objViaje = new Viaje();
-                    // Datos
-                    $objViaje->setId($fila['idviaje']);
-                    $objViaje->setDestino($fila['vdestino']);
-                    $objViaje->setCantMaxPasajeros($fila['vcantmaxpasajeros']);
-                    $objViaje->setImporte($fila['vimporte']);
-                    $objViaje->setTipoAsiento($fila['tipoAsiento']);
-                    $objViaje->setIdaYVuelta($fila['idayvuelta']);
-
-                    // Asignación de objetos (delegación)
-                    $objResponsableV = new ResponsableV();
-                    $objResponsableV->buscarResponsable($fila['rnumeroempleado']);
-                    $objViaje->setObjResponsableV($objResponsableV);
-
-                    // Empresa
-                    $objEmpresa = new Empresa();
-                    $objEmpresa->buscarEmpresa($fila['idempresa']);
-                    $objViaje->setObjEmpresa($objEmpresa);
-
-                    // Arreglos
-                    $objPasajero = new Pasajero();
-                    $colecPasajeros = $objPasajero->listar("idviaje = " . $objViaje->getId());
-                    $objViaje->setColecObjPasajeros($colecPasajeros);
+                    $objViaje->buscarViaje($fila['idviaje']);
                     array_push($arreglo, $objViaje);
                 }
             }else{

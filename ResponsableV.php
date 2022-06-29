@@ -189,10 +189,7 @@ class ResponsableV{
                 // Con while se recorre todo.
                 while($fila = $base->Registro()){
                     $objResponsableV = new ResponsableV();
-                    $objResponsableV->setNumEmpleado($fila['rnumeroempleado']);
-                    $objResponsableV->setNumLicencia($fila['rnumerolicencia']);
-                    $objResponsableV->setNombre($fila['rnombre']);
-                    $objResponsableV->setApellido($fila['rapellido']);
+                    $objResponsableV->buscarResponsable($fila['rnumeroempleado']);
                     array_push($arreglo, $objResponsableV);
                 }
             }else{
