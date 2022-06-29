@@ -348,13 +348,18 @@ do{
                                         echo "\n+Total a pagar: " . $importe;
                                         echo "\n++++INSERCION EXITOSA";
                                     }else{
-                                        echo "+El pasajero con el documento nro " . $objPasajero->getNumDoc() . " ya está registrado en el viaje nro ". $objPasajero->getObjViaje()->getId();
-                                        echo "\n+¿Desea cambiarlo a este viaje? (si/no)\n>";
-                                        $respuesta = entre(["si", "no"]);
-                                        if($respuesta == "si"){
-                                            $objPasajero->modificar($objViaje->getId());
-                                            echo "++++MODIFICACION EXITOSA";
+                                        if($objPasajero->getObjViaje()->getId() != $objViaje->getId()){
+                                            echo "+El pasajero con el documento nro " . $objPasajero->getNumDoc() . " ya está registrado en el viaje nro ". $objPasajero->getObjViaje()->getId();
+                                            echo "\n+¿Desea cambiarlo a este viaje? (si/no)\n>";
+                                            $respuesta = entre(["si", "no"]);
+                                            if($respuesta == "si"){
+                                                $objPasajero->modificar($objViaje->getId());
+                                                echo "++++MODIFICACION EXITOSA";
+                                            }
+                                        }else{
+                                            echo "+El pasajero ya está registrado en este viaje.";
                                         }
+
                                     }
                                 }else{
                                     echo "No quedan puestos disponibles.";
